@@ -1,0 +1,16 @@
+# System / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Temp inspection and extract scripts
+*.py
+*.txt
+sec_*.html
+test_*.js
+Google-Drive-Source-Design-1.html
+
+# Node / package manager
+node_modules/
+.vercel

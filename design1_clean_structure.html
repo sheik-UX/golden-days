@@ -1,0 +1,2631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Golden Days — Loyal to the Good Times | Vodka + Real Fruit Juice</title>
+  <meta name="description" content="Clean, non-carbonated canned cocktails crafted with premium vodka and real fruit juice. 4.5% ABV, 100 calories, 0g added sugar. Massachusetts local.">
+  <link rel="icon" type="image/png" href="[BASE64_DATA]">
+
+  <!-- Fonts: Figtree, Bricolage Grotesque, Caveat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&family=Caveat:wght@500;600;700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Leaflet Map CSS for Store Locator -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+
+  <style>
+    /* ==========================================================================
+       CSS RESET & DESIGN TOKENS
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --color-bark: #4C3427;
+      --color-bark-rgb: 76, 52, 39;
+      --color-gold: #FCBA24;
+      --color-gold-hover: #F2AE16;
+      --color-amber: #CC8D27;
+      --color-cream: #FFFCE8;
+      --color-ivory: #FFFDF7;
+      --color-warm-bg: #FAF6EE;
+      --color-card-bg: #FFFFFF;
+      --color-border: rgba(76, 52, 39, 0.12);
+      --color-border-subtle: rgba(76, 52, 39, 0.08);
+      --color-muted: #6B5546;
+
+      --font-body: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-display: 'Bricolage Grotesque', sans-serif;
+      --font-script: 'Caveat', cursive, sans-serif;
+
+      --shadow-sm: 0 2px 8px rgba(76, 52, 39, 0.06);
+      --shadow-md: 0 8px 24px rgba(76, 52, 39, 0.08);
+      --shadow-lg: 0 16px 36px rgba(76, 52, 39, 0.12);
+      --shadow-can: 0 22px 24px rgba(76, 52, 39, 0.22);
+      --shadow-can-hover: 0 32px 32px rgba(76, 52, 39, 0.3);
+
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-pill: 9999px;
+
+      --ease-smooth: cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+      color: var(--color-bark);
+      background-color: var(--color-ivory);
+      cursor: default; /* RESTORE standard browser cursor */
+    }
+
+    body {
+      font-family: var(--font-body);
+      line-height: 1.6;
+      color: var(--color-bark);
+      background-color: var(--color-ivory);
+      overflow-x: hidden;
+      cursor: default; /* RESTORE standard browser cursor */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    a, button, input, summary, select {
+      cursor: pointer;
+    }
+
+    input[type="text"], input[type="search"] {
+      cursor: text;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    button {
+      border: none;
+      background: none;
+      font-family: inherit;
+    }
+
+    /* ==========================================================================
+       UTILITIES & TYPOGRAPHY
+       ========================================================================== */
+    .container {
+      width: 100%;
+      max-width: 1320px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: clamp(20px, 4vw, 48px);
+      padding-right: clamp(20px, 4vw, 48px);
+    }
+
+    .section-eyebrow {
+      font-family: var(--font-body);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-amber);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.25rem, 4.5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+      color: var(--color-bark);
+      margin-bottom: 1rem;
+    }
+
+    .section-subtitle {
+      font-size: clamp(1rem, 1.25vw, 1.1875rem);
+      color: var(--color-muted);
+      line-height: 1.6;
+      max-width: 640px;
+    }
+
+    .cursive-accent {
+      font-family: var(--font-script);
+      font-weight: 600;
+      font-style: normal;
+      color: var(--color-amber);
+    }
+
+    /* Standardized Buttons (NO floating / magnetic drag animations) */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 0.9375rem;
+      padding: 0.875rem 1.75rem;
+      border-radius: var(--radius-pill);
+      text-decoration: none;
+      transition: background-color 0.25s ease, transform 0.25s var(--ease-smooth), box-shadow 0.25s ease;
+      white-space: nowrap;
+      min-height: 48px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary {
+      background-color: var(--color-bark);
+      color: var(--color-cream);
+      box-shadow: 0 4px 14px rgba(76, 52, 39, 0.2);
+    }
+
+    .btn-primary:hover {
+      background-color: #37241A;
+      box-shadow: 0 6px 18px rgba(76, 52, 39, 0.28);
+    }
+
+    .btn-gold {
+      background-color: var(--color-gold);
+      color: var(--color-bark);
+      box-shadow: 0 4px 14px rgba(252, 186, 36, 0.35);
+    }
+
+    .btn-gold:hover {
+      background-color: var(--color-gold-hover);
+      box-shadow: 0 6px 18px rgba(252, 186, 36, 0.45);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      color: var(--color-bark);
+      border: 2px solid var(--color-bark);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--color-bark);
+      color: var(--color-cream);
+    }
+
+    /* ==========================================================================
+       NAVIGATION
+       ========================================================================== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 253, 247, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--color-border-subtle);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .site-header.scrolled {
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .nav-logo img {
+      height: 34px;
+      width: auto;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 0.9375rem;
+      color: var(--color-bark);
+      text-decoration: none;
+      transition: color 0.2s ease;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -4px;
+      width: 0;
+      height: 2px;
+      background-color: var(--color-gold);
+      transition: width 0.25s var(--ease-smooth);
+    }
+
+    .nav-links a:hover {
+      color: var(--color-amber);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav-mobile-toggle {
+      display: none;
+      padding: 0.5rem;
+      color: var(--color-bark);
+    }
+
+    .nav-mobile-toggle svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    /* Mobile Nav Drawer */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 72px 0 0 0;
+      background: var(--color-ivory);
+      padding: 2rem;
+      z-index: 99;
+      flex-direction: column;
+      gap: 1.5rem;
+      border-top: 1px solid var(--color-border-subtle);
+    }
+
+    .mobile-menu.open {
+      display: flex;
+    }
+
+    .mobile-menu a {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-bark);
+      text-decoration: none;
+    }
+
+    /* ==========================================================================
+       HERO SECTION
+       ========================================================================== */
+    .hero-section {
+      position: relative;
+      background: linear-gradient(180deg, #FFFDF8 0%, #FFF5DD 42%, #FDE7B4 78%, #FBDC9A 100%);
+      padding-top: clamp(2rem, 4vw, 3.5rem);
+      padding-bottom: clamp(3rem, 5vw, 5rem);
+      overflow: hidden;
+      border-bottom: 1px solid rgba(76, 52, 39, 0.08);
+    }
+
+    /* 3 CORE SELLING POINTS BADGE GRID NEAR TOP */
+    .core-selling-points {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      max-width: 980px;
+      margin: 0 auto clamp(2rem, 3.5vw, 3rem);
+    }
+
+    .selling-point-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(76, 52, 39, 0.1);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.25s var(--ease-smooth), box-shadow 0.25s ease;
+    }
+
+    .selling-point-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    .sp-icon-wrapper {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #FFF2C8;
+      border: 1px solid rgba(252, 186, 36, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-bark);
+      flex-shrink: 0;
+    }
+
+    .sp-icon-wrapper svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .sp-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sp-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--color-bark);
+      line-height: 1.2;
+    }
+
+    .sp-subtitle {
+      font-size: 0.8125rem;
+      color: var(--color-muted);
+      line-height: 1.35;
+      margin-top: 2px;
+    }
+
+    /* Hero Center Content */
+    .hero-content {
+      text-align: center;
+      max-width: 860px;
+      margin: 0 auto clamp(2.5rem, 4vw, 3.5rem);
+    }
+
+    .hero-tagline-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 700;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--color-amber);
+      margin-bottom: 1rem;
+    }
+
+    .hero-tagline-eyebrow::before,
+    .hero-tagline-eyebrow::after {
+      content: '';
+      width: 24px;
+      height: 1px;
+      background-color: var(--color-amber);
+      opacity: 0.5;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.75rem, 6.5vw, 5.25rem);
+      font-weight: 800;
+      line-height: 0.98;
+      letter-spacing: -0.04em;
+      color: var(--color-bark);
+      margin-bottom: 1.25rem;
+      text-wrap: balance;
+    }
+
+    .hero-title .cursive-mark {
+      font-family: var(--font-script);
+      font-weight: 700;
+      font-size: 1.15em;
+      color: var(--color-amber);
+      display: inline-block;
+      transform: rotate(-2deg);
+      margin-left: 0.2rem;
+    }
+
+    .hero-description {
+      font-size: clamp(1.0625rem, 1.4vw, 1.25rem);
+      line-height: 1.6;
+      color: var(--color-bark);
+      max-width: 660px;
+      margin: 0 auto 2rem;
+      text-wrap: pretty;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* Hero Cans Showcase */
+    .hero-showcase {
+      position: relative;
+      max-width: 1040px;
+      margin: 0 auto;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-top: 1rem;
+    }
+
+    .hero-cans-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: clamp(8px, 2.5vw, 32px);
+      width: 100%;
+    }
+
+    .hero-can-item {
+      flex: 0 1 210px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.4s var(--ease-smooth);
+    }
+
+    .hero-can-item img {
+      width: 100%;
+      height: auto;
+      max-height: clamp(260px, 42vh, 460px);
+      object-fit: contain;
+      filter: var(--shadow-can);
+      transition: transform 0.4s var(--ease-smooth), filter 0.4s var(--ease-smooth);
+    }
+
+    .hero-can-item:hover img {
+      transform: translateY(-10px) scale(1.03);
+      filter: var(--shadow-can-hover);
+    }
+
+    .hero-can-caption {
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .hero-can-flavor {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.9375rem;
+      color: var(--color-bark);
+    }
+
+    /* Specs quick strip under hero */
+    .hero-specs-strip {
+      margin-top: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(12px, 3vw, 36px);
+      flex-wrap: wrap;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(76, 52, 39, 0.12);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-bark);
+    }
+
+    .hero-specs-strip span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .hero-specs-strip span::before {
+      content: '•';
+      color: var(--color-amber);
+      font-weight: 800;
+    }
+
+    .hero-specs-strip span:first-child::before {
+      display: none;
+    }
+
+    /* ==========================================================================
+       SECTION 2: 4 FLAVORS & PRODUCT SECTION
+       ========================================================================== */
+    .flavors-section {
+      padding: clamp(4.5rem, 8vw, 7.5rem) 0;
+      background-color: var(--color-warm-bg);
+      position: relative;
+    }
+
+    .flavors-header {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto clamp(2.5rem, 5vw, 4rem);
+    }
+
+    /* Benefits Bar */
+    .benefits-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      max-width: 1180px;
+      margin: 0 auto clamp(3rem, 5vw, 4.5rem);
+    }
+
+    .benefit-stat-card {
+      background: var(--color-card-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem 1.25rem;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.25s var(--ease-smooth);
+    }
+
+    .benefit-stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .benefit-number {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--color-bark);
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+
+    .benefit-label {
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--color-amber);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    .benefit-desc {
+      font-size: 0.875rem;
+      color: var(--color-muted);
+      line-height: 1.45;
+    }
+
+    /* 4 Flavors Grid (Side-by-side simultaneously) */
+    .flavors-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(16px, 2vw, 24px);
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .flavor-card {
+      background: var(--color-card-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 2rem 1.5rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.35s var(--ease-smooth), box-shadow 0.35s ease, border-color 0.35s ease;
+      overflow: hidden;
+    }
+
+    .flavor-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(252, 186, 36, 0.4);
+    }
+
+    /* Subtle tinted backdrop for flavor identity */
+    .flavor-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 220px;
+      opacity: 0.5;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      z-index: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .flavor-card.card-watermelon::before {
+      background: radial-gradient(circle at 50% 30%, #FFE2E2 0%, rgba(255, 226, 226, 0) 70%);
+    }
+    .flavor-card.card-pineapple::before {
+      background: radial-gradient(circle at 50% 30%, #FEF3C7 0%, rgba(254, 243, 199, 0) 70%);
+    }
+    .flavor-card.card-lemon-lime::before {
+      background: radial-gradient(circle at 50% 30%, #ECFCCB 0%, rgba(236, 252, 203, 0) 70%);
+    }
+    .flavor-card.card-peach-mango::before {
+      background: radial-gradient(circle at 50% 30%, #FFEDD5 0%, rgba(255, 237, 213, 0) 70%);
+    }
+
+    .flavor-card:hover::before {
+      opacity: 0.85;
+    }
+
+    .flavor-number-pill {
+      position: relative;
+      z-index: 1;
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--radius-pill);
+      background: rgba(76, 52, 39, 0.06);
+      color: var(--color-bark);
+      margin-bottom: 1.25rem;
+    }
+
+    .flavor-can-wrapper {
+      position: relative;
+      z-index: 1;
+      height: 280px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .flavor-can-wrapper img {
+      height: 100%;
+      width: auto;
+      object-fit: contain;
+      filter: var(--shadow-can);
+      transition: transform 0.4s var(--ease-smooth), filter 0.4s var(--ease-smooth);
+    }
+
+    /* Subtle, interactive micro-animations when hovering over the cans */
+    .flavor-card:hover .flavor-can-wrapper img {
+      transform: translateY(-8px) scale(1.03);
+      filter: var(--shadow-can-hover);
+    }
+
+    .flavor-name {
+      position: relative;
+      z-index: 1;
+      font-family: var(--font-display);
+      font-size: 1.625rem;
+      font-weight: 800;
+      color: var(--color-bark);
+      margin-bottom: 0.5rem;
+      line-height: 1.15;
+    }
+
+    .flavor-desc {
+      position: relative;
+      z-index: 1;
+      font-size: 0.9375rem;
+      color: var(--color-muted);
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      flex-grow: 1;
+    }
+
+    .flavor-notes-row {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 0.375rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .flavor-note-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      background: #F3EFE6;
+      border-radius: var(--radius-pill);
+      color: var(--color-bark);
+    }
+
+    .flavor-cta-btn {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-pill);
+      font-weight: 700;
+      font-size: 0.875rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.375rem;
+      background: var(--color-gold);
+      color: var(--color-bark);
+      transition: background-color 0.2s ease, transform 0.2s var(--ease-smooth), box-shadow 0.2s ease;
+      box-shadow: 0 2px 8px rgba(252, 186, 36, 0.25);
+    }
+
+    .flavor-cta-btn:hover {
+      background: var(--color-gold-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(252, 186, 36, 0.4);
+    }
+
+    /* ==========================================================================
+       SECTION 3: STORE LOCATOR SECTION
+       ========================================================================== */
+    .locator-section {
+      padding: clamp(4.5rem, 8vw, 7.5rem) 0;
+      background-color: var(--color-ivory);
+      position: relative;
+      border-top: 1px solid var(--color-border-subtle);
+    }
+
+    .locator-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+
+    /* Flavor Filter Bar */
+    .filter-bar-wrapper {
+      background: var(--color-card-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .filter-label {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+    }
+
+    .filter-pills-row {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-pill {
+      padding: 0.5rem 1.125rem;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 600;
+      background: var(--color-warm-bg);
+      border: 1px solid var(--color-border);
+      color: var(--color-bark);
+      transition: all 0.2s ease;
+    }
+
+    .filter-pill:hover {
+      background: #EFE9DC;
+      border-color: rgba(76, 52, 39, 0.2);
+    }
+
+    .filter-pill.active {
+      background: var(--color-bark);
+      color: var(--color-cream);
+      border-color: var(--color-bark);
+      box-shadow: 0 2px 8px rgba(76, 52, 39, 0.2);
+    }
+
+    /* Search Input & Quick Zip Chips */
+    .search-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-form {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--color-warm-bg);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-pill);
+      padding: 0.375rem 0.5rem 0.375rem 1.25rem;
+      flex: 1 1 320px;
+      transition: border-color 0.2s ease;
+    }
+
+    .search-form:focus-within {
+      border-color: var(--color-bark);
+      background: #FFFFFF;
+    }
+
+    .search-input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--color-bark);
+      width: 100%;
+    }
+
+    .search-input::placeholder {
+      color: #9C897B;
+      font-weight: 400;
+    }
+
+    .search-btn {
+      padding: 0.625rem 1.5rem;
+      border-radius: var(--radius-pill);
+      background: var(--color-gold);
+      color: var(--color-bark);
+      font-weight: 700;
+      font-size: 0.875rem;
+      transition: background-color 0.2s ease;
+    }
+
+    .search-btn:hover {
+      background: var(--color-gold-hover);
+    }
+
+    .quick-zips {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      font-size: 0.8125rem;
+      color: var(--color-muted);
+    }
+
+    .zip-chip {
+      padding: 0.25rem 0.625rem;
+      border-radius: var(--radius-pill);
+      background: #F3ECE0;
+      border: 1px solid rgba(76, 52, 39, 0.08);
+      font-weight: 600;
+      font-size: 0.8125rem;
+      color: var(--color-bark);
+      transition: background-color 0.15s ease;
+    }
+
+    .zip-chip:hover {
+      background: #E8DECE;
+    }
+
+    /* Locator Main Split View (List + Map) */
+    .locator-content-grid {
+      display: grid;
+      grid-template-columns: 440px 1fr;
+      gap: 1.5rem;
+      height: 640px;
+    }
+
+    /* Store List Scrollable Column */
+    .store-list-container {
+      background: var(--color-card-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .store-list-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 0.875rem;
+      border-bottom: 1px solid var(--color-border-subtle);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-muted);
+    }
+
+    .store-count-badge {
+      background: #FFF1CC;
+      color: var(--color-bark);
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-pill);
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+
+    .store-cards-scroll {
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding-top: 0.875rem;
+      padding-right: 0.375rem;
+      flex-grow: 1;
+    }
+
+    .store-card {
+      background: var(--color-warm-bg);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.125rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .store-card:hover, .store-card.active {
+      background: #FFFFFF;
+      border-color: var(--color-gold);
+      box-shadow: var(--shadow-sm);
+      transform: translateY(-2px);
+    }
+
+    .store-card.active {
+      border-left: 4px solid var(--color-gold);
+    }
+
+    .store-number-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--color-gold);
+      border: 2px solid var(--color-bark);
+      color: var(--color-bark);
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .store-card-info {
+      flex-grow: 1;
+    }
+
+    .store-card-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.0625rem;
+      color: var(--color-bark);
+      line-height: 1.25;
+      margin-bottom: 0.25rem;
+    }
+
+    .store-card-address {
+      font-size: 0.875rem;
+      color: var(--color-muted);
+      line-height: 1.4;
+      margin-bottom: 0.5rem;
+    }
+
+    .store-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .store-flavor-tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-pill);
+      background: #EBE5D8;
+      color: var(--color-bark);
+    }
+
+    .store-distance-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--color-amber);
+    }
+
+    .store-directions-link {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--color-bark);
+      text-decoration: underline;
+      margin-left: auto;
+    }
+
+    /* Map Column */
+    .map-wrapper {
+      background: var(--color-card-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+
+    #store-map {
+      width: 100%;
+      height: 100%;
+      min-height: 480px;
+      z-index: 1;
+    }
+
+    /* Custom Leaflet styling */
+    .leaflet-pane.leaflet-tile-pane {
+      filter: sepia(0.25) saturate(1.1) brightness(1.02);
+    }
+
+    .custom-marker-pin {
+      width: 32px;
+      height: 32px;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      background: var(--color-gold);
+      border: 2px solid var(--color-bark);
+      box-shadow: 0 4px 10px rgba(76, 52, 39, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .custom-marker-pin span {
+      transform: rotate(45deg);
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 0.8125rem;
+      color: var(--color-bark);
+    }
+
+    /* ==========================================================================
+       SECTION 4: BRAND STORY & CULTURE SECTION
+       ========================================================================== */
+    .story-section {
+      padding: clamp(5rem, 9vw, 8rem) 0;
+      background: linear-gradient(180deg, #FAF6EE 0%, #FFF7E4 40%, #FFF3D6 100%);
+      position: relative;
+      border-top: 1px solid var(--color-border-subtle);
+      overflow: hidden;
+    }
+
+    .story-intro-block {
+      max-width: 860px;
+      margin: 0 auto clamp(3rem, 5vw, 4.5rem);
+      text-align: center;
+    }
+
+    .story-core-tagline {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      color: var(--color-bark);
+      margin-bottom: 1.25rem;
+    }
+
+    .story-core-tagline .cursive-tagline {
+      font-family: var(--font-script);
+      font-weight: 700;
+      color: var(--color-amber);
+      display: block;
+      font-size: 1.08em;
+      margin-top: 0.25rem;
+    }
+
+    .story-intro-lead {
+      font-size: clamp(1.0625rem, 1.4vw, 1.25rem);
+      color: var(--color-bark);
+      line-height: 1.65;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* Expandable Storytelling Layout */
+    .story-accordion-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    .story-disclosure {
+      background: var(--color-card-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s var(--ease-smooth);
+      overflow: hidden;
+    }
+
+    .story-disclosure[open] {
+      box-shadow: var(--shadow-md);
+      border-color: rgba(252, 186, 36, 0.4);
+    }
+
+    .story-summary {
+      padding: 1.5rem clamp(1.25rem, 3vw, 2.25rem);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      list-style: none;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .story-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .story-summary-left {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .story-index-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--color-warm-bg);
+      border: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 0.9375rem;
+      color: var(--color-bark);
+      flex-shrink: 0;
+    }
+
+    .story-disclosure[open] .story-index-badge {
+      background: var(--color-gold);
+      border-color: var(--color-bark);
+    }
+
+    .story-title-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .story-chapter-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--color-amber);
+    }
+
+    .story-chapter-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.125rem, 2vw, 1.5rem);
+      font-weight: 800;
+      color: var(--color-bark);
+      line-height: 1.2;
+    }
+
+    .story-toggle-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--color-warm-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-bark);
+      transition: transform 0.3s var(--ease-smooth), background-color 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .story-disclosure[open] .story-toggle-icon {
+      transform: rotate(180deg);
+      background: var(--color-gold);
+    }
+
+    /* Story Expanded Content */
+    .story-expanded-body {
+      padding: 0 clamp(1.25rem, 3vw, 2.25rem) 2.25rem;
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 2rem;
+      align-items: center;
+      border-top: 1px solid var(--color-border-subtle);
+      margin-top: 0.5rem;
+      padding-top: 1.75rem;
+    }
+
+    /* Polaroid Image Style for authentic warmth */
+    .story-photo-polaroid {
+      background: #FFFFFF;
+      padding: 10px 10px 14px;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 12px 28px rgba(76, 52, 39, 0.15), 0 2px 6px rgba(76, 52, 39, 0.08);
+      transform: rotate(-1.5deg);
+      transition: transform 0.3s var(--ease-smooth);
+    }
+
+    .story-photo-polaroid:hover {
+      transform: rotate(0deg) scale(1.02);
+    }
+
+    .polaroid-img-wrapper {
+      position: relative;
+      aspect-ratio: 4/3.2;
+      overflow: hidden;
+      border-radius: 4px;
+    }
+
+    .polaroid-img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      filter: saturate(1.04) contrast(1.02);
+    }
+
+    .polaroid-caption {
+      padding-top: 10px;
+      font-family: var(--font-script);
+      font-size: 1.375rem;
+      font-weight: 600;
+      color: var(--color-bark);
+      text-align: center;
+    }
+
+    .story-narrative-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .story-narrative-text p {
+      font-size: 1rem;
+      line-height: 1.65;
+      color: var(--color-bark);
+    }
+
+    .story-highlight-quote {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--color-amber);
+      border-left: 3px solid var(--color-gold);
+      padding-left: 1rem;
+      margin: 0.5rem 0;
+      font-style: italic;
+    }
+
+    /* Brand Manifesto Quote Block */
+    .brand-manifesto-block {
+      max-width: 920px;
+      margin: 4.5rem auto 0;
+      background: rgba(255, 255, 255, 0.9);
+      border: 2px dashed rgba(204, 141, 39, 0.35);
+      border-radius: var(--radius-lg);
+      padding: clamp(2rem, 4vw, 3rem);
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .manifesto-seal {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: var(--color-cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .manifesto-seal img {
+      width: 130%;
+      height: auto;
+    }
+
+    .manifesto-text h3 {
+      font-family: var(--font-display);
+      font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+      font-weight: 800;
+      color: var(--color-bark);
+      margin-bottom: 0.5rem;
+    }
+
+    .manifesto-text p {
+      font-size: 1rem;
+      color: var(--color-muted);
+      line-height: 1.6;
+    }
+
+    /* ==========================================================================
+       SECTION 5: SOCIAL MEDIA & FOOTER
+       ========================================================================== */
+    .social-section {
+      padding: clamp(4rem, 7vw, 6rem) 0;
+      background-color: #FAF4E5;
+      border-top: 1px solid var(--color-border-subtle);
+    }
+
+    .social-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 1rem;
+    }
+
+    .social-tile {
+      aspect-ratio: 1;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.3s var(--ease-smooth), box-shadow 0.3s ease;
+      text-decoration: none;
+    }
+
+    .social-tile:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: var(--shadow-md);
+    }
+
+    .social-tile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s var(--ease-smooth);
+    }
+
+    .social-tile:hover img {
+      transform: scale(1.05);
+    }
+
+    .social-tile.can-tile {
+      background: radial-gradient(circle at 50% 60%, #FFFDF8 0%, #FEE8B8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10%;
+    }
+
+    .social-tile.can-tile img {
+      height: 90%;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 12px rgba(76, 52, 39, 0.25));
+    }
+
+    /* FOOTER */
+    .site-footer {
+      background-color: var(--color-bark);
+      color: var(--color-cream);
+      padding: clamp(4rem, 6vw, 6rem) 0 2rem;
+      position: relative;
+    }
+
+    .footer-main-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: clamp(2rem, 4vw, 4rem);
+      margin-bottom: 3.5rem;
+    }
+
+    .footer-brand-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .footer-logo-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .footer-seal-img {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--color-cream);
+      padding: 4px;
+    }
+
+    .footer-tagline {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--color-gold);
+      line-height: 1.1;
+    }
+
+    .footer-bio {
+      font-size: 0.9375rem;
+      color: rgba(255, 252, 232, 0.8);
+      line-height: 1.6;
+      max-width: 360px;
+    }
+
+    .footer-nav-col h4 {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      margin-bottom: 1.25rem;
+    }
+
+    .footer-nav-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .footer-nav-col a {
+      color: var(--color-cream);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      transition: color 0.2s ease;
+    }
+
+    .footer-nav-col a:hover {
+      color: var(--color-gold);
+    }
+
+    .footer-wide-logo {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto 2.5rem;
+      opacity: 0.92;
+    }
+
+    .footer-bottom-bar {
+      padding-top: 1.75rem;
+      border-top: 1px solid rgba(255, 252, 232, 0.16);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-size: 0.8125rem;
+      color: rgba(255, 252, 232, 0.7);
+    }
+
+    /* ==========================================================================
+       AGE GATE MODAL (21+ Alcoholic Beverage Compliance)
+       ========================================================================== */
+    .age-gate-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(76, 52, 39, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    .age-gate-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .age-gate-card {
+      background: var(--color-cream);
+      border: 2px solid var(--color-gold);
+      border-radius: var(--radius-lg);
+      padding: clamp(2rem, 5vw, 3rem) clamp(1.5rem, 4vw, 2.5rem);
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .age-gate-logo {
+      width: 90px;
+      height: 90px;
+      margin-bottom: 0.25rem;
+    }
+
+    .age-gate-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+      font-weight: 800;
+      color: var(--color-bark);
+      line-height: 1.15;
+    }
+
+    .age-gate-subtitle {
+      font-size: 0.9375rem;
+      color: var(--color-muted);
+      line-height: 1.5;
+    }
+
+    .age-gate-actions {
+      display: flex;
+      gap: 0.75rem;
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+
+    .age-gate-actions .btn {
+      flex: 1;
+    }
+
+    .age-gate-denied {
+      display: none;
+      color: #B91C1C;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+
+    /* ==========================================================================
+       RESPONSIVE BREAKPOINTS
+       ========================================================================== */
+    @media (max-width: 1024px) {
+      .core-selling-points {
+        grid-template-columns: 1fr;
+        max-width: 520px;
+      }
+
+      .benefits-bar {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .flavors-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .locator-content-grid {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+
+      .map-wrapper {
+        height: 440px;
+      }
+
+      .story-expanded-body {
+        grid-template-columns: 1fr;
+      }
+
+      .social-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .footer-main-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links, .nav-actions .btn {
+        display: none;
+      }
+
+      .nav-mobile-toggle {
+        display: block;
+      }
+
+      .hero-cans-row {
+        gap: 8px;
+      }
+
+      .hero-can-item {
+        flex: 0 1 120px;
+      }
+
+      .hero-can-item img {
+        max-height: 220px;
+      }
+
+      .flavors-grid {
+        grid-template-columns: 1fr;
+        max-width: 440px;
+      }
+
+      .benefits-bar {
+        grid-template-columns: 1fr;
+      }
+
+      .brand-manifesto-block {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .social-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .footer-main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-bottom-bar {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ==========================================================================
+       AGE VERIFICATION MODAL
+       ========================================================================== -->
+  <div id="age-gate" class="age-gate-overlay" role="dialog" aria-modal="true" aria-labelledby="age-gate-heading">
+    <div class="age-gate-card">
+      <img src="[BASE64_DATA]" alt="Golden Days" class="age-gate-logo">
+      <div class="section-eyebrow">Loyal to the Good Times</div>
+      <h2 id="age-gate-heading" class="age-gate-title">Are you 21 or older?</h2>
+      <p class="age-gate-subtitle">You must be of legal drinking age to explore Golden Days canned cocktails. Please verify your age to continue.</p>
+      <div class="age-gate-actions">
+        <button id="age-yes-btn" class="btn btn-primary" onclick="handleAgeVerify(true)">Yes, I'm 21+</button>
+        <button id="age-no-btn" class="btn btn-outline" onclick="handleAgeVerify(false)">No, I'm Under 21</button>
+      </div>
+      <div id="age-denied-msg" class="age-gate-denied">
+        Come back when you turn 21. We'll have a cold one ready for you.
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       SITE HEADER / NAVIGATION
+       ========================================================================== */ -->
+  <header class="site-header" id="site-header">
+    <div class="container nav-container">
+      <a href="#top" class="nav-logo" aria-label="Golden Days Home">
+        <img src="[BASE64_DATA]" alt="Golden Days">
+      </a>
+
+      <nav aria-label="Primary Navigation">
+        <ul class="nav-links">
+          <li><a href="#flavors">Flavors</a></li>
+          <li><a href="#find">Store Locator</a></li>
+          <li><a href="#story">Our Story</a></li>
+          <li><a href="#social">Instagram</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="#find" class="btn btn-primary">Find Near You</a>
+        <button class="nav-mobile-toggle" id="mobile-toggle" aria-label="Toggle Navigation Menu">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="#flavors" onclick="closeMobileMenu()">Flavors</a>
+    <a href="#find" onclick="closeMobileMenu()">Store Locator</a>
+    <a href="#story" onclick="closeMobileMenu()">Our Story</a>
+    <a href="#social" onclick="closeMobileMenu()">Instagram</a>
+    <a href="#find" class="btn btn-primary" style="margin-top: 1rem; width: 100%;" onclick="closeMobileMenu()">Find Near You</a>
+  </div>
+
+  <main>
+    <!-- ==========================================================================
+         SECTION 1: HERO / LANDING PAGE
+         ========================================================================== -->
+    <section class="hero-section" id="top">
+      <div class="container">
+        
+        <!-- 3 CORE SELLING POINTS BADGE GRID PROMINENTLY NEAR TOP -->
+        <div class="core-selling-points" aria-label="Core Brand Pillars">
+          <!-- Point 1: Massachusetts Local -->
+          <div class="selling-point-card">
+            <div class="sp-icon-wrapper" aria-hidden="true">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+            </div>
+            <div class="sp-text">
+              <span class="sp-title">Massachusetts Local</span>
+              <span class="sp-subtitle">South Boston & South Shore roots</span>
+            </div>
+          </div>
+
+          <!-- Point 2: No Carbonation -->
+          <div class="selling-point-card">
+            <div class="sp-icon-wrapper" aria-hidden="true">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+              </svg>
+            </div>
+            <div class="sp-text">
+              <span class="sp-title">No Carbonation</span>
+              <span class="sp-subtitle">0 Bubbles · Clean, smooth sip</span>
+            </div>
+          </div>
+
+          <!-- Point 3: Nothing Artificial -->
+          <div class="selling-point-card">
+            <div class="sp-icon-wrapper" aria-hidden="true">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <div class="sp-text">
+              <span class="sp-title">Nothing Artificial</span>
+              <span class="sp-subtitle">Real fruit juice · 0g added sugar</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Main Headline & Messaging -->
+        <div class="hero-content">
+          <div class="hero-tagline-eyebrow">Vodka + Real Fruit Juice · Massachusetts</div>
+          <h1 class="hero-title">
+            These are the <span class="cursive-mark">Golden Days.</span>
+          </h1>
+          <p class="hero-description">
+            Clean distilled craft vodka blended with real pressed fruit juice. Never carbonated, never artificial. Crafted for unhurried afternoons, genuine friends, and everyday moments year-round.
+          </p>
+          <div class="hero-cta-group">
+            <a href="#find" class="btn btn-primary">Find Near You</a>
+            <a href="#flavors" class="btn btn-outline">Explore All 4 Flavors</a>
+          </div>
+        </div>
+
+        <!-- Hero Cans Showcase: All 4 in an elegant natural lineup -->
+        <div class="hero-showcase">
+          <div class="hero-cans-row">
+            <div class="hero-can-item">
+              <img src="[BASE64_DATA]" alt="Golden Days Watermelon Vodka Can" loading="eager">
+              <div class="hero-can-caption">
+                <div class="hero-can-flavor">Watermelon</div>
+              </div>
+            </div>
+            <div class="hero-can-item">
+              <img src="[BASE64_DATA]" alt="Golden Days Pineapple Vodka Can" loading="eager">
+              <div class="hero-can-caption">
+                <div class="hero-can-flavor">Pineapple</div>
+              </div>
+            </div>
+            <div class="hero-can-item">
+              <img src="[BASE64_DATA]" alt="Golden Days Lemon Lime Vodka Can" loading="eager">
+              <div class="hero-can-caption">
+                <div class="hero-can-flavor">Lemon Lime</div>
+              </div>
+            </div>
+            <div class="hero-can-item">
+              <img src="[BASE64_DATA]" alt="Golden Days Peach Mango Vodka Can" loading="eager">
+              <div class="hero-can-caption">
+                <div class="hero-can-flavor">Peach Mango</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Specs Quick Strip -->
+        <div class="hero-specs-strip">
+          <span>4.5% ALC / VOL</span>
+          <span>100 Calories</span>
+          <span>0 Bubbles (Non-Carbonated)</span>
+          <span>0g Added Sugar</span>
+          <span>Gluten Free</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         SECTION 2: 4 FLAVORS GRID SECTION
+         ========================================================================== -->
+    <section class="flavors-section" id="flavors">
+      <div class="container">
+        
+        <div class="flavors-header">
+          <div class="section-eyebrow">Real Ingredients · Pure Taste</div>
+          <h2 class="section-title">Four Real Flavors. Zero Bubbles.</h2>
+          <p class="section-subtitle">
+            Most canned drinks use carbonation to mask low-grade liquor. We start with ultra-clean craft vodka and real pressed fruit juice, leaving out the bloat and artificial syrup.
+          </p>
+        </div>
+
+        <!-- Product Benefits Stat Cards -->
+        <div class="benefits-bar">
+          <div class="benefit-stat-card">
+            <div class="benefit-number">4.5<span style="font-size: 1.5rem;">%</span></div>
+            <div class="benefit-label">Alc / Vol</div>
+            <div class="benefit-desc">Smooth, sessionable craft vodka balanced for long afternoons.</div>
+          </div>
+
+          <div class="benefit-stat-card">
+            <div class="benefit-number">0</div>
+            <div class="benefit-label">Bubbles</div>
+            <div class="benefit-desc">100% non-carbonated. No bloating. Sip straight or pour over ice.</div>
+          </div>
+
+          <div class="benefit-stat-card">
+            <div class="benefit-number">100</div>
+            <div class="benefit-label">Calories</div>
+            <div class="benefit-desc">Light and clean in every 12 fl oz can. Refreshment without regret.</div>
+          </div>
+
+          <div class="benefit-stat-card">
+            <div class="benefit-number">0<span style="font-size: 1.5rem;">g</span></div>
+            <div class="benefit-label">Added Sugar</div>
+            <div class="benefit-desc">Gluten-free, nothing artificial. Naturally sweetened by real fruit juice.</div>
+          </div>
+        </div>
+
+        <!-- 4 Flavors Grid (Side-by-side simultaneously) -->
+        <div class="flavors-grid">
+          
+          <!-- Flavor 1: Watermelon -->
+          <div class="flavor-card card-watermelon">
+            <span class="flavor-number-pill">01 · Watermelon</span>
+            <div class="flavor-can-wrapper">
+              <img src="[BASE64_DATA]" alt="Golden Days Watermelon vodka with real fruit juice can">
+            </div>
+            <h3 class="flavor-name">Watermelon</h3>
+            <p class="flavor-desc">Juicy, crisp watermelon with a clean vodka finish. Tastes like the first warm Saturday of the year.</p>
+            <div class="flavor-notes-row">
+              <span class="flavor-note-badge">Crisp</span>
+              <span class="flavor-note-badge">Juicy</span>
+              <span class="flavor-note-badge">Summer-Sweet</span>
+            </div>
+            <button class="flavor-cta-btn" onclick="filterStoreByFlavor('Watermelon')">
+              Find This Flavor
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+          </div>
+
+          <!-- Flavor 2: Pineapple -->
+          <div class="flavor-card card-pineapple">
+            <span class="flavor-number-pill">02 · Pineapple</span>
+            <div class="flavor-can-wrapper">
+              <img src="[BASE64_DATA]" alt="Golden Days Pineapple vodka with real fruit juice can">
+            </div>
+            <h3 class="flavor-name">Pineapple</h3>
+            <p class="flavor-desc">Bright, sunny pineapple that keeps it light. A beach day in a can, no sand required.</p>
+            <div class="flavor-notes-row">
+              <span class="flavor-note-badge">Bright</span>
+              <span class="flavor-note-badge">Tropical</span>
+              <span class="flavor-note-badge">Easy</span>
+            </div>
+            <button class="flavor-cta-btn" onclick="filterStoreByFlavor('Pineapple')">
+              Find This Flavor
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+          </div>
+
+          <!-- Flavor 3: Lemon Lime -->
+          <div class="flavor-card card-lemon-lime">
+            <span class="flavor-number-pill">03 · Lemon Lime</span>
+            <div class="flavor-can-wrapper">
+              <img src="[BASE64_DATA]" alt="Golden Days Lemon Lime vodka with real fruit juice can">
+            </div>
+            <h3 class="flavor-name">Lemon Lime</h3>
+            <p class="flavor-desc">Zesty lemon and fresh lime, cool and clean. The timeless classic everybody reaches for first.</p>
+            <div class="flavor-notes-row">
+              <span class="flavor-note-badge">Zesty</span>
+              <span class="flavor-note-badge">Clean</span>
+              <span class="flavor-note-badge">Refreshing</span>
+            </div>
+            <button class="flavor-cta-btn" onclick="filterStoreByFlavor('Lemon Lime')">
+              Find This Flavor
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+          </div>
+
+          <!-- Flavor 4: Peach Mango -->
+          <div class="flavor-card card-peach-mango">
+            <span class="flavor-number-pill">04 · Peach Mango</span>
+            <div class="flavor-can-wrapper">
+              <img src="[BASE64_DATA]" alt="Golden Days Peach Mango vodka with real fruit juice can">
+            </div>
+            <h3 class="flavor-name">Peach Mango</h3>
+            <p class="flavor-desc">Ripe peach meets mellow mango. Golden hour poured straight into a can.</p>
+            <div class="flavor-notes-row">
+              <span class="flavor-note-badge">Ripe</span>
+              <span class="flavor-note-badge">Mellow</span>
+              <span class="flavor-note-badge">Golden</span>
+            </div>
+            <button class="flavor-cta-btn" onclick="filterStoreByFlavor('Peach Mango')">
+              Find This Flavor
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         SECTION 3: STORE LOCATOR SECTION
+         ========================================================================== -->
+    <section class="locator-section" id="find">
+      <div class="container">
+        
+        <div class="locator-header">
+          <div>
+            <div class="section-eyebrow">Where to Buy · Massachusetts</div>
+            <h2 class="section-title" style="margin-bottom: 0.5rem;">Find a cold one near you.</h2>
+            <p class="section-subtitle">
+              Poured from South Boston down the South Shore. Filter by your favorite flavor or search your ZIP code to find cold cans nearby.
+            </p>
+          </div>
+          <div style="font-size: 0.875rem; font-weight: 600; color: var(--color-amber);">
+            South Boston → South Shore Route
+          </div>
+        </div>
+
+        <!-- Filter Controls Container -->
+        <div class="filter-bar-wrapper">
+          <!-- Flavor filter pills -->
+          <div>
+            <div class="filter-label" style="margin-bottom: 0.625rem;">Filter By Flavor:</div>
+            <div class="filter-pills-row" id="flavor-filter-row">
+              <button class="filter-pill active" data-flavor="all" onclick="selectFlavorFilter('all')">All Flavors</button>
+              <button class="filter-pill" data-flavor="Watermelon" onclick="selectFlavorFilter('Watermelon')">Watermelon</button>
+              <button class="filter-pill" data-flavor="Pineapple" onclick="selectFlavorFilter('Pineapple')">Pineapple</button>
+              <button class="filter-pill" data-flavor="Lemon Lime" onclick="selectFlavorFilter('Lemon Lime')">Lemon Lime</button>
+              <button class="filter-pill" data-flavor="Peach Mango" onclick="selectFlavorFilter('Peach Mango')">Peach Mango</button>
+            </div>
+          </div>
+
+          <!-- Search Form + Quick ZIPs -->
+          <div class="search-row">
+            <form class="search-form" onsubmit="handleZipSubmit(event)">
+              <svg width="20" height="20" fill="none" stroke="#6B5546" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+              <input type="text" id="zip-input" class="search-input" placeholder="Enter ZIP code (e.g. 02127)" maxlength="5" inputmode="numeric" aria-label="ZIP Code Search">
+              <button type="submit" class="search-btn">Search</button>
+            </form>
+
+            <div class="quick-zips">
+              <span>Quick ZIPs:</span>
+              <button type="button" class="zip-chip" onclick="quickZip('02127')">02127 (South Boston)</button>
+              <button type="button" class="zip-chip" onclick="quickZip('02210')">02210 (Seaport)</button>
+              <button type="button" class="zip-chip" onclick="quickZip('02169')">02169 (Quincy)</button>
+              <button type="button" class="zip-chip" onclick="quickZip('02045')">02045 (Hull)</button>
+              <button type="button" class="zip-chip" onclick="quickZip('02066')">02066 (Scituate)</button>
+              <button type="button" class="zip-chip" onclick="quickZip('02360')">02360 (Plymouth)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Store Locator Content Split Grid (List + Map) -->
+        <div class="locator-content-grid">
+          
+          <!-- Left: Store Cards List -->
+          <div class="store-list-container">
+            <div class="store-list-header">
+              <span id="store-list-summary">Showing 14 South Boston & South Shore stores</span>
+              <span class="store-count-badge" id="store-count-badge">14 Locations</span>
+            </div>
+            <div class="store-cards-scroll" id="store-cards-list">
+              <!-- Dynamically populated by JS -->
+            </div>
+          </div>
+
+          <!-- Right: Interactive Leaflet Map -->
+          <div class="map-wrapper">
+            <div id="store-map" aria-label="Interactive store locations map"></div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         SECTION 4: BRAND STORY & CULTURE SECTION
+         ========================================================================== -->
+    <section class="story-section" id="story">
+      <div class="container">
+        
+        <div class="story-intro-block">
+          <div class="section-eyebrow">Brand Story & Culture</div>
+          <h2 class="story-core-tagline">
+            "Loyal to the good times."
+            <span class="cursive-tagline">You don't always know you're in them until they're gone.</span>
+          </h2>
+          <p class="story-intro-lead">
+            Golden Days is a reminder to slow down and enjoy what's right in front of you: good people, simple moments, and wherever the day takes you. Born along the Massachusetts coast, we make drinks that let the moment shine.
+          </p>
+        </div>
+
+        <!-- Expandable Storytelling Layout (Details & Summary Accordion) -->
+        <div class="story-accordion-group">
+          
+          <!-- Chapter 1: Bodhi the dog -->
+          <details class="story-disclosure" name="brand-story" open>
+            <summary class="story-summary">
+              <div class="story-summary-left">
+                <span class="story-index-badge">01</span>
+                <div class="story-title-group">
+                  <span class="story-chapter-eyebrow">The Inspiration</span>
+                  <h3 class="story-chapter-title">Meet Bodhi — Chief Morale Officer</h3>
+                </div>
+              </div>
+              <div class="story-toggle-icon" aria-hidden="true">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </div>
+            </summary>
+            <div class="story-expanded-body">
+              <div class="story-photo-polaroid">
+                <div class="polaroid-img-wrapper">
+                  <img src="[BASE64_DATA]" alt="Bodhi the golden retriever and friends on the beach at sunset">
+                </div>
+                <div class="polaroid-caption">Nantasket, Late August</div>
+              </div>
+              <div class="story-narrative-text">
+                <p>
+                  Bodhi is our golden retriever and the true beating heart of Golden Days. He doesn't check calendar notifications, track algorithms, or chase whatever trend is hot this month.
+                </p>
+                <div class="story-highlight-quote">
+                  "All Bodhi cares about is an open beach, a tennis ball, and being with the people he loves."
+                </div>
+                <p>
+                  We named Golden Days after that unhurried coastal attitude. It's an invitation to take a breath, drop the day's stress, and stay fiercely loyal to the good times and good people right in front of you.
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <!-- Chapter 2: The Founders & South Boston Roots -->
+          <details class="story-disclosure" name="brand-story">
+            <summary class="story-summary">
+              <div class="story-summary-left">
+                <span class="story-index-badge">02</span>
+                <div class="story-title-group">
+                  <span class="story-chapter-eyebrow">Our Roots</span>
+                  <h3 class="story-chapter-title">Founded on the Deck at 7:42 PM</h3>
+                </div>
+              </div>
+              <div class="story-toggle-icon" aria-hidden="true">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </div>
+            </summary>
+            <div class="story-expanded-body">
+              <div class="story-photo-polaroid">
+                <div class="polaroid-img-wrapper">
+                  <img src="[BASE64_DATA]" alt="Friends toasting Golden Days cans on deck at golden hour">
+                </div>
+                <div class="polaroid-caption">The Deck, 7:42pm</div>
+              </div>
+              <div class="story-narrative-text">
+                <p>
+                  Golden Days started around a weathered wooden deck table in South Boston. Four friends looked at the table cluttered with seltzers and flavored malt drinks and asked a simple question:
+                </p>
+                <div class="story-highlight-quote">
+                  "Why does every canned cocktail need to be so aggressive, fizzy, and full of fake sweetness?"
+                </div>
+                <p>
+                  We wanted a drink that tasted like what we actually mixed at home: clean craft vodka, fresh-squeezed fruit juice, and zero artificial aftertaste. No aggressive carbonation that fills you with gas, just a smooth, natural drink you can enjoy all afternoon.
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <!-- Chapter 3: Why No Bubbles? / Real Fruit Quality -->
+          <details class="story-disclosure" name="brand-story">
+            <summary class="story-summary">
+              <div class="story-summary-left">
+                <span class="story-index-badge">03</span>
+                <div class="story-title-group">
+                  <span class="story-chapter-eyebrow">The Philosophy</span>
+                  <h3 class="story-chapter-title">Real Fruit Juice. Zero Bubbles. Year-Round.</h3>
+                </div>
+              </div>
+              <div class="story-toggle-icon" aria-hidden="true">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </div>
+            </summary>
+            <div class="story-expanded-body">
+              <div class="story-photo-polaroid">
+                <div class="polaroid-img-wrapper">
+                  <img src="[BASE64_DATA]" alt="Golden Days lifestyle moments in Massachusetts">
+                </div>
+                <div class="polaroid-caption">South Boston & South Shore, MA</div>
+              </div>
+              <div class="story-narrative-text">
+                <p>
+                  In the canned cocktail world, carbonation is often used as a shortcut to disguise cheap neutral grain spirit and synthetic flavorings. When your spirit is pure and your juice is real, there's no need to hide behind bubbles.
+                </p>
+                <div class="story-highlight-quote">
+                  "Simple by design. Easy to enjoy. Life's better when you don't overthink it."
+                </div>
+                <p>
+                  At 4.5% ABV and just 100 calories with zero added sugar, Golden Days is versatile and sessionable across all four Massachusetts seasons—from tailgates in the crisp autumn to backyard cookouts and winter gatherings with lifelong friends.
+                </p>
+              </div>
+            </div>
+          </details>
+
+        </div>
+
+        <!-- Brand Manifesto Callout Box -->
+        <div class="brand-manifesto-block">
+          <div class="manifesto-seal">
+            <img src="[BASE64_DATA]" alt="Golden Days Crest">
+          </div>
+          <div class="manifesto-text">
+            <h3>Crafted Locally for Massachusetts</h3>
+            <p>
+              Independent, local, and proudly made in Massachusetts. We believe in honest ingredients, transparent labeling, and keeping things simple so you can stay focused on the memories that matter.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         SECTION 5: SOCIAL MEDIA & INSTAGRAM SECTION
+         ========================================================================== -->
+    <section class="social-section" id="social">
+      <div class="container">
+        
+        <div class="social-header">
+          <div>
+            <div class="section-eyebrow">Tag Your Golden Days</div>
+            <h2 class="section-title" style="margin-bottom: 0.25rem;">@goldendaysdrinks</h2>
+            <p class="section-subtitle">Share your good times from Boston to the Cape. Tag us for a feature.</p>
+          </div>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+            Follow on Instagram
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+          </a>
+        </div>
+
+        <!-- Instagram Gallery Grid -->
+        <div class="social-grid">
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-tile" aria-label="Instagram post: Sunset beach with Bodhi">
+            <img src="[BASE64_DATA]" alt="Bodhi on the beach at golden hour" loading="lazy">
+          </a>
+          <div class="social-tile can-tile">
+            <img src="[BASE64_DATA]" alt="Golden Days Lemon Lime can" loading="lazy">
+          </div>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-tile" aria-label="Instagram post: Deck toast with friends">
+            <img src="[BASE64_DATA]" alt="Friends toasting cans on deck" loading="lazy">
+          </a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-tile" aria-label="Instagram post: Golden Days moments">
+            <img src="[BASE64_DATA]" alt="Golden Days canned cocktails lifestyle" loading="lazy">
+          </a>
+          <div class="social-tile can-tile">
+            <img src="[BASE64_DATA]" alt="Golden Days Peach Mango can" loading="lazy">
+          </div>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-tile" aria-label="Instagram post: Coastline sunset">
+            <img src="[BASE64_DATA]" alt="Coastal afternoon sunset" loading="lazy" style="object-position: 80% 50%;">
+          </a>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ==========================================================================
+       SECTION 6: FOOTER LINKS & LEGAL
+       ========================================================================== -->
+  <footer class="site-footer" id="shop">
+    <div class="container">
+      
+      <div class="footer-main-grid">
+        <div class="footer-brand-col">
+          <div class="footer-logo-row">
+            <img src="[BASE64_DATA]" alt="Golden Days Seal" class="footer-seal-img">
+            <span class="footer-tagline">Loyal to the Good Times.</span>
+          </div>
+          <p class="footer-bio">
+            Clean craft vodka with real pressed fruit juice. Made for South Boston, the South Shore, and wherever the day takes you.
+          </p>
+        </div>
+
+        <div class="footer-nav-col">
+          <h4>Flavors</h4>
+          <ul>
+            <li><a href="#flavors" onclick="filterStoreByFlavor('Watermelon')">Watermelon</a></li>
+            <li><a href="#flavors" onclick="filterStoreByFlavor('Pineapple')">Pineapple</a></li>
+            <li><a href="#flavors" onclick="filterStoreByFlavor('Lemon Lime')">Lemon Lime</a></li>
+            <li><a href="#flavors" onclick="filterStoreByFlavor('Peach Mango')">Peach Mango</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-nav-col">
+          <h4>Get Some</h4>
+          <ul>
+            <li><a href="#find">Find Near You</a></li>
+            <li><a href="#find">Retailer Locator</a></li>
+            <li><a href="#find">South Shore Route</a></li>
+            <li><a href="mailto:wholesale@goldendaysdrinks.com">Wholesale Inquiries</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-nav-col">
+          <h4>Say Hi</h4>
+          <ul>
+            <li><a href="#story">Our Story</a></li>
+            <li><a href="#social">Instagram</a></li>
+            <li><a href="mailto:hello@goldendaysdrinks.com">Contact Team</a></li>
+            <li><a href="#">Press Kit</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Wide Brand Wordmark Banner -->
+      <img src="[BASE64_DATA]" alt="Golden Days Wordmark" class="footer-wide-logo">
+
+      <!-- Bottom Legal Bar -->
+      <div class="footer-bottom-bar">
+        <span>© 2026 Golden Days Beverages LLC · South Boston, Massachusetts. All rights reserved.</span>
+        <span>4.5% ALC / VOL · Please enjoy responsibly. Must be 21+ to purchase.</span>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       JAVASCRIPT: STORE LOCATOR & INTERACTION LOGIC
+       ========================================================================== -->
+  <!-- Leaflet Library -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <script>
+    /* ==========================================================================
+       AGE VERIFICATION LOGIC
+       ========================================================================== */
+    function checkAgeGate() {
+      const ok = localStorage.getItem('gd_age_ok');
+      const gate = document.getElementById('age-gate');
+      if (ok === '1') {
+        gate.classList.add('hidden');
+        document.body.style.overflow = '';
+      } else {
+        gate.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function handleAgeVerify(is21) {
+      const gate = document.getElementById('age-gate');
+      const denied = document.getElementById('age-denied-msg');
+      if (is21) {
+        try { localStorage.setItem('gd_age_ok', '1'); } catch(e) {}
+        gate.classList.add('hidden');
+        document.body.style.overflow = '';
+      } else {
+        denied.style.display = 'block';
+      }
+    }
+
+    // Run age check on load
+    checkAgeGate();
+
+    /* ==========================================================================
+       MOBILE MENU TOGGLE
+       ========================================================================== */
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    if (mobileToggle && mobileMenu) {
+      mobileToggle.addEventListener('click', () => {
+        mobileMenu.classList.toggle('open');
+      });
+    }
+
+    function closeMobileMenu() {
+      if (mobileMenu) mobileMenu.classList.remove('open');
+    }
+
+    /* Header scroll elevation */
+    window.addEventListener('scroll', () => {
+      const header = document.getElementById('site-header');
+      if (header) {
+        if (window.scrollY > 40) header.classList.add('scrolled');
+        else header.classList.remove('scrolled');
+      }
+    }, { passive: true });
+
+    /* ==========================================================================
+       STORE DATA & LOCATOR SYSTEM
+       ========================================================================== */
+    const STORES = [
+      { id: 0, name: "L Street Package Store", addr: "612 E Broadway", town: "South Boston", lat: 42.3355, lng: -71.0365, kind: "Package Store", flavors: ["Watermelon", "Pineapple", "Lemon Lime", "Peach Mango"] },
+      { id: 1, name: "Castle Island Provisions", addr: "801 E 1st St", town: "South Boston", lat: 42.3378, lng: -71.0255, kind: "Market & Deli", flavors: ["Watermelon", "Lemon Lime"] },
+      { id: 2, name: "Seaport Spirits Co.", addr: "300 Summer St", town: "Boston", lat: 42.3500, lng: -71.0480, kind: "Liquor Store", flavors: ["Watermelon", "Pineapple", "Lemon Lime", "Peach Mango"] },
+      { id: 3, name: "Savin Hill Wine & Spirits", addr: "1 Savin Hill Ave", town: "Dorchester", lat: 42.3110, lng: -71.0490, kind: "Package Store", flavors: ["Pineapple", "Peach Mango"] },
+      { id: 4, name: "Marina Bay Market", addr: "333 Victory Rd", town: "Quincy", lat: 42.2950, lng: -71.0300, kind: "Market & Provisions", flavors: ["Watermelon", "Pineapple"] },
+      { id: 5, name: "Wollaston Beach Liquors", addr: "470 Quincy Shore Dr", town: "Quincy", lat: 42.2690, lng: -71.0170, kind: "Liquor Store", flavors: ["Watermelon", "Pineapple", "Lemon Lime", "Peach Mango"] },
+      { id: 6, name: "Weymouth Landing Spirits", addr: "70 Washington St", town: "Weymouth", lat: 42.2210, lng: -70.9690, kind: "Package Store", flavors: ["Peach Mango", "Lemon Lime"] },
+      { id: 7, name: "Hingham Harbor Wine", addr: "10 North St", town: "Hingham", lat: 42.2440, lng: -70.8890, kind: "Wine & Spirits", flavors: ["Watermelon", "Pineapple", "Lemon Lime", "Peach Mango"] },
+      { id: 8, name: "Nantasket Package", addr: "150 Nantasket Ave", town: "Hull", lat: 42.2730, lng: -70.8500, kind: "Package Store", flavors: ["Watermelon", "Lemon Lime"] },
+      { id: 9, name: "Cohasset Village Spirits", addr: "25 Elm St", town: "Cohasset", lat: 42.2410, lng: -70.8030, kind: "Liquor Store", flavors: ["Pineapple", "Peach Mango"] },
+      { id: 10, name: "Scituate Harbor Liquors", addr: "100 Front St", town: "Scituate", lat: 42.1980, lng: -70.7230, kind: "Package Store", flavors: ["Watermelon", "Pineapple", "Lemon Lime", "Peach Mango"] },
+      { id: 11, name: "Green Harbor Market", addr: "200 Dyke Rd", town: "Marshfield", lat: 42.0880, lng: -70.6540, kind: "Beach Market", flavors: ["Watermelon", "Peach Mango"] },
+      { id: 12, name: "Duxbury Beach Provisions", addr: "400 Gurnet Rd", town: "Duxbury", lat: 42.0450, lng: -70.6670, kind: "Market", flavors: ["Lemon Lime", "Peach Mango"] },
+      { id: 13, name: "Plymouth Waterfront Spirits", addr: "50 Water St", town: "Plymouth", lat: 41.9570, lng: -70.6620, kind: "Liquor Store", flavors: ["Watermelon", "Pineapple", "Lemon Lime", "Peach Mango"] }
+    ];
+
+    const ZIPS = {
+      '02127': [42.335, -71.04],  // South Boston
+      '02210': [42.348, -71.04],  // Seaport
+      '02125': [42.316, -71.058], // Dorchester
+      '02169': [42.25, -71.0],    // Quincy
+      '02170': [42.267, -71.02],  // Wollaston
+      '02188': [42.21, -70.96],   // Weymouth
+      '02043': [42.22, -70.89],   // Hingham
+      '02045': [42.29, -70.87],   // Hull / Nantasket
+      '02025': [42.24, -70.81],   // Cohasset
+      '02066': [42.19, -70.75],   // Scituate
+      '02050': [42.1, -70.7],     // Marshfield
+      '02332': [42.04, -70.7],    // Duxbury
+      '02360': [41.9, -70.6]      // Plymouth
+    };
+
+    let currentFlavorFilter = 'all';
+    let userOrigin = [42.3355, -71.0365]; // Default South Boston
+    let mapInstance = null;
+    let mapMarkers = [];
+    let activeStoreId = 0;
+
+    // Haversine distance in miles
+    function calcDistance(coordA, coordB) {
+      const R = 3958.8; // miles
+      const toRad = x => x * Math.PI / 180;
+      const dLat = toRad(coordB[0] - coordA[0]);
+      const dLng = toRad(coordB[1] - coordA[1]);
+      const a = Math.sin(dLat / 2) ** 2 +
+                Math.cos(toRad(coordA[0])) * Math.cos(toRad(coordB[0])) *
+                Math.sin(dLng / 2) ** 2;
+      return 2 * R * Math.asin(Math.sqrt(a));
+    }
+
+    // Filter and sort stores
+    function getFilteredStores() {
+      return STORES.filter(store => {
+        if (currentFlavorFilter === 'all') return true;
+        return store.flavors.includes(currentFlavorFilter);
+      }).map(store => {
+        const dist = calcDistance(userOrigin, [store.lat, store.lng]);
+        return { ...store, distance: dist };
+      }).sort((a, b) => a.distance - b.distance);
+    }
+
+    // Render Store List Cards
+    function renderStoreList() {
+      const filtered = getFilteredStores();
+      const listContainer = document.getElementById('store-cards-list');
+      const badge = document.getElementById('store-count-badge');
+      const summary = document.getElementById('store-list-summary');
+
+      badge.textContent = `${filtered.length} Locations`;
+      
+      const flavorLabel = currentFlavorFilter === 'all' ? 'All Flavors' : currentFlavorFilter;
+      summary.textContent = `Showing ${filtered.length} stores carrying ${flavorLabel}`;
+
+      if (filtered.length === 0) {
+        listContainer.innerHTML = `
+          <div style="padding: 2rem; text-align: center; color: var(--color-muted);">
+            No stores found matching this criteria. Try selecting "All Flavors" or a nearby ZIP.
+          </div>
+        `;
+        return;
+      }
+
+      listContainer.innerHTML = filtered.map((store, index) => {
+        const isAllFlavors = store.flavors.length === 4;
+        const flavorBadges = isAllFlavors 
+          ? '<span class="store-flavor-tag" style="background:#FFF1CC; color:#784500;">All 4 Flavors</span>'
+          : store.flavors.map(f => `<span class="store-flavor-tag">${f}</span>`).join(' ');
+
+        const distText = `${store.distance.toFixed(1)} mi away`;
+        const isActive = store.id === activeStoreId ? 'active' : '';
+
+        return `
+          <div class="store-card ${isActive}" onclick="selectStore(${store.id})" id="store-card-${store.id}">
+            <div class="store-number-badge">${index + 1}</div>
+            <div class="store-card-info">
+              <div class="store-card-name">${store.name}</div>
+              <div class="store-card-address">${store.addr}, ${store.town}, MA</div>
+              <div class="store-card-meta">
+                ${flavorBadges}
+                <span class="store-distance-tag">${distText}</span>
+                <a href="https://maps.google.com/?q=${encodeURIComponent(store.name + ' ' + store.addr + ' ' + store.town + ' MA')}" 
+                   target="_blank" rel="noopener noreferrer" 
+                   class="store-directions-link" onclick="event.stopPropagation()">
+                   Directions
+                </a>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      updateMapMarkers(filtered);
+    }
+
+    // Select store card & focus marker
+    function selectStore(id) {
+      activeStoreId = id;
+      document.querySelectorAll('.store-card').forEach(el => el.classList.remove('active'));
+      const activeEl = document.getElementById(`store-card-${id}`);
+      if (activeEl) {
+        activeEl.classList.add('active');
+        activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      const store = STORES.find(s => s.id === id);
+      if (store && mapInstance) {
+        mapInstance.flyTo([store.lat, store.lng], 13, { duration: 0.8 });
+        const marker = mapMarkers.find(m => m.storeId === id);
+        if (marker) marker.openPopup();
+      }
+    }
+
+    // Flavor filter button clicks
+    function selectFlavorFilter(flavor) {
+      currentFlavorFilter = flavor;
+      document.querySelectorAll('#flavor-filter-row .filter-pill').forEach(btn => {
+        if (btn.getAttribute('data-flavor') === flavor) btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+      renderStoreList();
+    }
+
+    // When clicking "Find This Flavor" from Flavor Cards
+    function filterStoreByFlavor(flavorName) {
+      selectFlavorFilter(flavorName);
+      const target = document.getElementById('find');
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // Handle ZIP Search
+    function handleZipSubmit(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById('zip-input');
+      const zip = input ? input.value.trim() : '';
+      if (ZIPS[zip]) {
+        userOrigin = ZIPS[zip];
+        renderStoreList();
+        if (mapInstance) mapInstance.flyTo(userOrigin, 12, { duration: 1.0 });
+      } else if (zip.length === 5) {
+        alert(`${zip} is currently outside our direct delivery zone. Showing nearest South Boston & South Shore stores!`);
+        userOrigin = [42.3355, -71.0365];
+        renderStoreList();
+      }
+    }
+
+    function quickZip(zip) {
+      const input = document.getElementById('zip-input');
+      if (input) input.value = zip;
+      handleZipSubmit(null);
+    }
+
+    // Initialize Map with Leaflet
+    function initMap() {
+      const mapEl = document.getElementById('store-map');
+      if (!mapEl || typeof L === 'undefined') return;
+
+      mapInstance = L.map('store-map', {
+        scrollWheelZoom: false,
+        zoomControl: true,
+        attributionControl: true
+      }).setView([42.18, -70.86], 10);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(mapInstance);
+
+      renderStoreList();
+    }
+
+    // Update Markers on map
+    function updateMapMarkers(filteredStores) {
+      if (!mapInstance || typeof L === 'undefined') return;
+
+      mapMarkers.forEach(m => m.remove());
+      mapMarkers = [];
+
+      filteredStores.forEach((store, idx) => {
+        const icon = L.divIcon({
+          className: '',
+          iconSize: [32, 40],
+          iconAnchor: [16, 40],
+          popupAnchor: [0, -36],
+          html: `
+            <div class="custom-marker-pin">
+              <span>${idx + 1}</span>
+            </div>
+          `
+        });
+
+        const marker = L.marker([store.lat, store.lng], { icon }).addTo(mapInstance);
+        marker.storeId = store.id;
+
+        marker.bindPopup(`
+          <div style="font-family:'Bricolage Grotesque',sans-serif; font-size:15px; font-weight:800; color:#4C3427; margin-bottom:4px;">
+            ${store.name}
+          </div>
+          <div style="font-family:'Figtree',sans-serif; font-size:13px; color:#6B5546; margin-bottom:6px;">
+            ${store.addr}, ${store.town}, MA
+          </div>
+          <div style="font-size:12px; font-weight:700; color:#CC8D27;">
+            ${store.flavors.join(' · ')}
+          </div>
+        `);
+
+        marker.on('click', () => {
+          selectStore(store.id);
+        });
+
+        mapMarkers.push(marker);
+      });
+
+      if (filteredStores.length > 0) {
+        const bounds = L.latLngBounds(filteredStores.map(s => [s.lat, s.lng]));
+        mapInstance.fitBounds(bounds, { padding: [40, 40], maxZoom: 12 });
+      }
+    }
+
+    // Run map init after DOM loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      initMap();
+    });
+  </script>
+</body>
+</html>
