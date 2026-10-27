@@ -1,0 +1,41 @@
+# Ignore scripts and intermediate files
+*.py
+*.txt
+*.mp4
+*.jpg
+*.svg
+design*.html
+design*.css
+design*.js
+sec_*.html
+cleaned_*.html
+template_*.html
+Golden-Days-Design-*
+downloaded_*
+drive_*
+index_old*
+component_logic.js
+extracted_*.js
+extracted_*.css
+extracted_template.html
+photos.png
+hero_meadow_scene.jpg
+landscape_bg.jpg
+clean_meadow.jpg
+ref_frame_*.jpg
+clean_meadow_thumb.jpg
+
+# Ignore folders
+video_frames/
+video_frames_fine/
+story_ref_frames/
+extracted_design1/
+extracted_design2/
+__pycache__/
+.vscode/
+.idea/
+
+# Ignore test screenshots
+*.png
+!extracted_assets/**
+
