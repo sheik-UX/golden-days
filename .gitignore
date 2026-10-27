@@ -9,8 +9,31 @@ Thumbs.db
 *.txt
 sec_*.html
 test_*.js
+test_*.png
 Google-Drive-Source-Design-1.html
+downloaded_drive_file.html
+drive_Golden-Days-Design-2.html
+index_old_design2.html
+extracted_script_*.js
+extracted_style.css
+golden_days_*.svg
+__pycache__/
 
-# Node / package manager
+# Large video references and frame dumps
+*.mp4
+video_frames/
+video_frames_fine/
+story_ref_frames/
+extracted_design1/
+extracted_design2/
+
+# Test screenshots
+screenshot_*.png
+orig_*.png
+rev_*.png
+hero_match_test.png
+*.jpg
+
+# Node / Vercel
 node_modules/
 .vercel
