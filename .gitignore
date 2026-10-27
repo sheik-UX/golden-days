@@ -7,6 +7,7 @@ Thumbs.db
 # Temp inspection and extract scripts
 *.py
 *.txt
+!fonts/README.txt
 sec_*.html
 test_*.js
 test_*.png
