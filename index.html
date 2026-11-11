@@ -960,13 +960,14 @@ nav .btn {
 
 .story-header-wrap {
   max-width: 820px;
-  margin: 0 auto 68px;
+  margin: 0 auto 76px;
   text-align: center;
 }
 
 .story-header h2 {
   font-size: clamp(34px, 4.2vw, 54px);
-  line-height: 1.06;
+  line-height: 1.14;
+  text-wrap: balance;
 }
 
 .story-timeline-container {
@@ -978,8 +979,8 @@ nav .btn {
 
 .timeline-track {
   position: absolute;
-  top: 42px;
-  height: calc(100% - 84px);
+  top: 62px;
+  height: calc(100% - 104px);
   left: 50%;
   width: 3.5px;
   transform: translateX(-50%);
@@ -1005,7 +1006,7 @@ nav .btn {
   position: relative;
   display: flex;
   align-items: flex-start;
-  margin-bottom: 64px;
+  margin-bottom: 56px;
   width: 100%;
   z-index: 2;
   pointer-events: none;
@@ -1026,10 +1027,10 @@ nav .btn {
 
 @media (min-width: 992px) {
   .timeline-row {
-    margin-bottom: 24px;
+    margin-bottom: 36px;
   }
-  .timeline-row:not(:first-child) {
-    margin-top: -108px;
+  .timeline-row + .timeline-row {
+    margin-top: 0;
   }
 }
 
@@ -1075,7 +1076,7 @@ nav .btn {
 }
 
 .timeline-card {
-  --slide-x: 76px;
+  --slide-x: clamp(28px, 4.5vw, 68px);
   perspective: 1200px;
   width: 100%;
   touch-action: pan-y;
@@ -1279,9 +1280,10 @@ nav .btn {
 
 .card-body p {
   font-size: 15.5px;
-  line-height: 1.62;
+  line-height: 1.65;
   color: rgba(76, 52, 39, 0.86);
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  text-wrap: pretty;
 }
 
 .card-body p:last-child {
@@ -1851,7 +1853,7 @@ footer .legal {
     padding: 75px 0 88px;
   }
   .story-header-wrap {
-    margin-bottom: 48px;
+    margin-bottom: 56px;
   }
   .timeline-track {
     left: 22px;
