@@ -243,17 +243,25 @@ nav .btn {
 .hero {
   position: relative;
   overflow: hidden;
-  margin-top: -79px;
-  min-height: 100vh;
-  min-height: 100dvh;
-  display: flex;
-  align-items: center;
+  margin-top: -85px;
   padding: 145px 0 90px;
   background: linear-gradient(180deg, #FFFDF6 0%, #FFF8E5 20%, #FEE8A0 45%, #F7C346 72%, #F9CD5C 88%, #FDF8EC 100%);
 }
 
+@media (min-width: 821px) {
+  .hero {
+    margin-top: -79px;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+  }
+  .hero .wrap {
+    width: 100%;
+  }
+}
+
 .hero .wrap {
-  width: 100%;
   display: grid;
   grid-template-columns: 1fr 1.08fr;
   gap: 40px;
