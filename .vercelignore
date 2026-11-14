@@ -36,6 +36,9 @@ __pycache__/
 .idea/
 
 # Ignore test screenshots
+client_logo_downloaded
+*.webp
+*.jpeg
 *.png
 !extracted_assets/**
 
