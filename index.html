@@ -2486,10 +2486,14 @@ header {
   }
 }
 
-/* Hero / Landing Page: Slightly larger balanced typography & clean sharp image rendering */
+/* Hero / Landing Page: Slightly larger balanced typography, tighter title-to-headline gap & crisp image */
+.hero-title {
+  margin-bottom: 6px;
+}
+
 .wmwrap {
   width: min(465px, 100%);
-  margin: 0 auto 18px auto;
+  margin: 0 auto 0 auto;
 }
 
 .hero-copy-block {
@@ -2499,7 +2503,7 @@ header {
 .hero-headline {
   font-size: clamp(28px, 2.55vw, 36px);
   line-height: 1.22;
-  margin: 0 auto 18px auto;
+  margin: 0 auto 16px auto;
 }
 
 .hero-para {
@@ -2512,10 +2516,72 @@ header {
 .hero-btn-single {
   padding: 15px 38px;
   font-size: 16px;
+  white-space: nowrap;
 }
 
 .hero-client-img {
   image-rendering: auto;
+}
+
+/* Global / Desktop Section Vertical Rhythm (8pt-grid compact spacing) */
+section {
+  padding: 64px 0;
+}
+
+.info {
+  padding: 64px 0 72px;
+}
+
+.info-head {
+  margin: 0 auto 36px;
+}
+
+.benefits-grid {
+  margin-top: 32px;
+}
+
+.flavors {
+  padding: 64px 0 72px;
+}
+
+.flavors-head {
+  margin: 0 auto 40px;
+}
+
+.find {
+  padding: 64px 0 72px;
+}
+
+.find .top {
+  margin-bottom: 24px;
+}
+
+.story {
+  padding: 68px 0 76px;
+}
+
+.story-header-wrap {
+  margin: 0 auto 48px;
+}
+
+.story-timeline-container {
+  padding: 8px 0 20px;
+}
+
+.social {
+  padding: 56px 0 0;
+}
+
+.photo-strip-wrap {
+  margin: 0 auto 44px;
+}
+
+.contact-section {
+  padding: 64px 0 72px;
+}
+
+footer {
+  padding: 56px 0 32px;
 }
 
 /* Store Locator search input fills naturally without removed count tracker */
@@ -2611,11 +2677,11 @@ header {
     gap: 24px;
   }
   .hero-title {
-    margin-bottom: 14px;
+    margin-bottom: 6px;
   }
   .wmwrap {
     width: min(310px, 86%);
-    margin: 4px auto 12px;
+    margin: 4px auto 0;
   }
   .hero-headline {
     font-size: clamp(26px, 6.8vw, 32px);
@@ -2681,6 +2747,16 @@ header {
   }
   footer {
     padding: 40px 0 calc(32px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (max-width: 767px) {
+  .hero-btn-single {
+    white-space: nowrap;
+    font-size: clamp(12px, 3.5vw, 14.5px);
+    padding: 14px 24px 12px;
+    letter-spacing: 0.06em;
+    max-width: 100%;
   }
 }
 
